@@ -3,14 +3,11 @@
 public sealed class GzipDecompressionMiddleware
 {
     private readonly RequestDelegate _next;
-    public GzipDecompressionMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    public GzipDecompressionMiddleware(RequestDelegate next) => _next = next;
 
     public async Task Invoke(HttpContext context)
     {
-        if (context.Request.Headers["Content-Encoding"] == "gzip")
+        if (context.Request.Headers.ContentEncoding == "gzip")
         {
             context.Request.EnableBuffering();
 
@@ -22,14 +19,8 @@ public sealed class GzipDecompressionMiddleware
 
             // Replace the request body with the decompressed stream
             context.Request.Body = new MemoryStream(decompressedStream.ToArray());
+        }
 
-            // Call the next middleware in the pipeline
-            await _next(context);
-        }
-        else
-        {
-            // If not gzip, proceed without modification
-            await _next(context);
-        }
+        await _next(context);
     }
 }

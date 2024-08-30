@@ -7,11 +7,14 @@ var htmlResponse = await new HttpClient()
 
 var largeText = await htmlResponse.Content.ReadAsStringAsync();
 
-Console.WriteLine("Original data length: " + largeText.Length);
+byte[] originalData = Encoding.UTF8.GetBytes(largeText);
+
+Console.WriteLine($"Original data length: {originalData.Length} bytes");
 
 var compressedData = await CompressAsync(largeText);
 
-Console.WriteLine("Compressed data length: " + compressedData.Length);
+Console.WriteLine($"Compressed data length: {compressedData.Length} bytes");
+Console.WriteLine($"Compression ratio: {(float)compressedData.Length / originalData.Length:P2}");
 
 await SendCompressedDataAsync(compressedData);
 
@@ -40,7 +43,7 @@ static async Task SendCompressedDataAsync(byte[] compressedData, CancellationTok
         content.Headers.ContentEncoding.Add("gzip");
         content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
-        var response = await client.PostAsync("https://localhost:5001/api/demo", content, ct);
+        var response = await client.PostAsync("https://localhost:7185/api/demo", content, ct);
         response.EnsureSuccessStatusCode();
     }
     catch (HttpRequestException ex)
