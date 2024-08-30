@@ -35,16 +35,13 @@ static async Task SendCompressedDataAsync(byte[] compressedData, CancellationTok
 {
     try
     {
-        using (var client = new HttpClient())
-        {
-            var content = new ByteArrayContent(compressedData);
-            content.Headers.ContentEncoding.Add("gzip");
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        using var client = new HttpClient();
+        var content = new ByteArrayContent(compressedData);
+        content.Headers.ContentEncoding.Add("gzip");
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
-            var response = await client.PostAsync("https://localhost:7185/api/demo", content, ct);
-            response.EnsureSuccessStatusCode();
-            Console.WriteLine("Response received: " + await response.Content.ReadAsStringAsync());
-        }
+        var response = await client.PostAsync("https://localhost:5001/api/demo", content, ct);
+        response.EnsureSuccessStatusCode();
     }
     catch (HttpRequestException ex)
     {
