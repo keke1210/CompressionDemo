@@ -25,8 +25,8 @@ public sealed class DecompressionMiddleware
             context.Request.EnableBuffering();
 
             using var decompressedStream = new MemoryStream();
-            using var gzipStream = new BrotliStream(context.Request.Body, CompressionMode.Decompress);
-            await gzipStream.CopyToAsync(decompressedStream);
+            using var brotliStream = new BrotliStream(context.Request.Body, CompressionMode.Decompress);
+            await brotliStream.CopyToAsync(decompressedStream);
 
             decompressedStream.Seek(0, SeekOrigin.Begin);
 
