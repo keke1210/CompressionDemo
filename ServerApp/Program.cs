@@ -1,7 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.UseMiddleware<GzipDecompressionMiddleware>();
+app.UseMiddleware<DecompressionMiddleware>();
 
 app.MapPost("/api/demo", async (HttpRequest request) =>
 {
